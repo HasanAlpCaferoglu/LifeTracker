@@ -1,12 +1,15 @@
 const asyncHandler = require("express-async-handler");
 
-const Goal = require("../models/goalModal.js");
+const Goal = require("../models/goalModel.js");
+const User = require("../models/userModel.js");
+const { use } = require("../routes/goalRoutes.js");
 
 // @desc GET goals
 // @route GET /api/goals
 // @access Private
 const getGoals = asyncHandler(async (req, res) => {
-  const goals = await Goal.find(); // get all goals from our database through mongoose
+  // Because of the protect middleware, we can access user info form the req.user
+  const goals = await Goal.find({ user: req.user.id }); // get all goals specific to a user from our database through mongoose. 
   res.status(200).json(goals);
 });
 
@@ -21,6 +24,7 @@ const setGoal = asyncHandler(async (req, res) => {
 
   const goal = await Goal.create({
     text: req.body.text,
+    user: req.user.id,
   });
 
   res.status(200).json(goal);
@@ -35,6 +39,22 @@ const updateGoal = asyncHandler(async (req, res) => {
   if (!goal) {
     res.status(400);
     throw new Error("Goal not found");
+  }
+
+  const user = await User.findById(req.user.id)
+
+
+  // check for user
+  if(!user) {
+    res.status(401) // not authorized
+    throw new Error('User not found')
+  }
+
+  // a person cannot update others goal
+  // make sure the logged in user matches the user of the goal that will be updated
+  if(goal.user.toString() !== user.id){
+    res.status(401) // not authorized
+    throw new Error('User not authorized')
   }
 
   const updatedGoal = await Goal.findByIdAndUpdate(req.params.id, req.body, {
@@ -55,9 +75,25 @@ const deleteGoal = asyncHandler(async (req, res) => {
     throw new Error("Goal not found");
   }
 
-   await goal.remove()
+  const user = await User.findById(req.user.id)
 
-  res.status(200).json({ id: req.params.id});
+
+  // check for user
+  if(!user) {
+    res.status(401) // not authorized
+    throw new Error('User not found')
+  }
+
+  // a person cannot delete others goal
+  // make sure the logged in user matches the user of the goal that will be deleted
+  if(goal.user.toString() !== user.id){
+    res.status(401) // not authorized
+    throw new Error('User not authorized')
+  }
+
+  await goal.remove();
+
+  res.status(200).json({ id: req.params.id });
 });
 
 module.exports = {
