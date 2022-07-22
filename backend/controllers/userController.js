@@ -75,13 +75,9 @@ const loginUser = asyncHandler(async (req, res) => {
 // @route GET /api/users/me
 // @access Private
 const getMe = asyncHandler(async (req, res) => {
-    const {_id, name, email} = await User.findById(req.user.id) // recall that in protect middleware, we set req.user as user info
+    // already get the user with authMiddleware whis is set to req.user
 
-    res.status(200).json({
-        id: _id,
-        name,
-        email,
-    }) // whenever user logged in they hit /api/users/me route, they get their own info
+    res.status(200).json(req.user) // whenever user logged in they hit /api/users/me route, they get their own info
 
 });
 
