@@ -18,6 +18,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 app.use("/api/goals", require("./routes/goalRoutes.js"));
+app.use("/api/todos", require("./routes/todoRoutes"));
+app.use("/api/routines", require("./routes/routineRoutes.js"))
 app.use("/api/users", require("./routes/userRoutes.js"));
 
 // Serve frontend

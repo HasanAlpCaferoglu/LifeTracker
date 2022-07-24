@@ -1,63 +1,24 @@
-import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { useSelector, useDispatch } from "react-redux";
-import GoalForm from "../components/GoalForm";
-import GoalItem from "../components/GoalItem";
-import Spinner from "../components/Spinner";
-import { getGoals, reset } from "../features/goals/goalSlice";
+import { useSelector } from "react-redux";
+import GoalContainer from "../components/GoalContainer";
+import RoutineContainer from "../components/RoutineContainer";
+import TodoContainer from "../components/TodoContainer";
+import Footer from "../components/Footer";
 
 
 function Dashboard() {
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
-
   const { user } = useSelector((state) => state.auth);
-  const { goals, isLoading, isError, message } = useSelector(
-    (state) => state.goals
-  );
-
-  useEffect(() => {
-    if (isError) {
-      console.log(message);
-    }
-
-    if (!user) {
-      navigate("/login");
-    }
-
-    dispatch(getGoals());
-
-    // reset the goals state on unmount when we leave the dashboard
-    // return () => {
-    //   dispatch(reset())
-    // }
-  }, [user, navigate, isError, message, dispatch]);
-
-  if (isLoading) {
-    return <Spinner />;
-  }
 
   return (
-    <>
-      <section className="heading">
-        <h1>Welcome {user && user.name} </h1>
-        <p>Goals Dashboard</p>
-      </section>
-
-      <GoalForm />
-
-      <section className="content">
-        {goals.length > 0 ? (
-          <div className="goals">
-            {goals.map((goal) => (
-              <GoalItem key={goal._id} goal={goal} />
-            ))}
-          </div>
-        ) : (
-          <h3>You have not set any goals</h3>
-        )}
-      </section>
-    </>
+    <div className="flex flex-col">
+      <h1 className="text-[2rem] font-bold mb-16 px-5 text-purple-600">
+        Be on track with LifeTracker...
+      </h1>
+      <div className="flex flex-col space-y-4 md:grid sm:grid-cols-3 sm:space-y-0">
+        <TodoContainer />
+        <RoutineContainer />
+        <GoalContainer />
+      </div>
+    </div>
   );
 }
 

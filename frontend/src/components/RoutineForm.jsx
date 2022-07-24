@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import {createGoal} from '../features/goals/goalSlice'
+import {createRoutine} from '../features/routines/routineSlice'
 
-function GoalForm() {
+function RoutineForm() {
   const [text, setText] = useState([]);
 
   const dispatch = useDispatch();
@@ -10,7 +10,7 @@ function GoalForm() {
   const onSubmit = (e) => {
     e.preventDefault();
 
-    dispatch(createGoal({text}))
+    dispatch(createRoutine({text}))
     setText('')
   };
 
@@ -28,8 +28,8 @@ function GoalForm() {
           />
         </div>
         <div className="mb-2.5">
-          <button type="submit" className="w-full mb-5 py-2.5 px-5 rounded-xl bg-gray-500 text-[#fff] font-bold text-base cursor-pointer text-center flex items-center justify-center hover:scale-[0.98]" >
-            Add Goal
+          <button type="submit" className="w-full mb-5 py-2.5 px-5 rounded-xl bg-orange-500 text-[#fff] font-bold text-base cursor-pointer text-center flex items-center justify-center hover:scale-[0.98]" >
+            Add Routine
           </button>
         </div>
       </form>
@@ -37,4 +37,4 @@ function GoalForm() {
   );
 }
 
-export default GoalForm;
+export default RoutineForm;
